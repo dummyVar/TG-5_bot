@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.ui import View, Button
 import requests
 from bs4 import BeautifulSoup
 import random
