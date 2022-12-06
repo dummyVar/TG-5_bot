@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import random
 
 config = {
-    'token': 'MTAzOTQ5OTk0NDE2OTU4NjczOA.GWWhAf.g353MrcaUihwzLJVjajIazULMGYf5TWXMAeEC8',
+    'token': 'MTAzOTQ5OTk0NDE2OTU4NjczOA.GF2-uk.wUAKLiZSn6Z5stSnYOfA3bD_OObyNMbcKeibYo',
     'prefix': '#',
 }
 
@@ -63,45 +63,24 @@ async def studere(ctx, *args):
         embinfo.set_thumbnail(url=f'https:{result[3]}')
     await ctx.reply(embed=embinfo)
 
-
-@bot.command(name='помощь')
-async def help_bot(ctx):
-    async def get_news(interaction):
-        msg = await random_news()
-        text = msg[0]
-        href = msg[1]
-        await interaction.response.send_message(f'{text}\nЧитать полную новость: {href}')
-
-    async def get_wiki(interaction):
-        await interaction.response.send_message(f'Введите ваш запрос используя команду #вики')
-
-    news_btn = Button(label='Новости', style=discord.ButtonStyle.red)
-    news_btn.callback = get_news
-    wiki = Button(label='Справка', style=discord.ButtonStyle.green)
-    wiki.callback = get_wiki
-    view = View()
-    view.add_item(news_btn)
-    view.add_item(wiki)
-    await ctx.reply(view=view)
-
 @bot.command(name='меню')
 async def menu(ctx):
     embed = discord.Embed(title="Помощник бота ТГ-5", description="Тут вы сможете найти всю информацию для работы с ботом", color=0xff2600)
     embed.set_author(name='ТГ-5', icon_url='https://www.pngmart.com/files/16/Vector-Help-PNG-Photos-1.png')
     embed.set_thumbnail(url='https://abali.ru/wp-content/uploads/2010/12/gerb_ussr.png')
+    embed.add_field(name="__**О сервере:**__", value="Сервер создан для изучения и обсуждения истории. Используя наш сервер вы можете не только обсуждать исторические темы и текущие новости, но и познавать мир посредствам нашего бота ТГ-5.", inline=False)
+    embed.add_field(name='\a', value='\a', inline=False)
     embed.add_field(name="__**Команды бота:**__", value="\a", inline=False)
-    embed.add_field(name="ℹ️ #помощь;", value="вызов справки", inline=False)
     embed.add_field(name="📰 #новости", value="получить случайную новость с сайта РИА Новости", inline=False)
     embed.add_field(name="📖 #вики", value="получить информацию с сайта Википедия", inline=False)
     embed.add_field(name="🇷🇺 #товарищи", value="Почетный список товарищей", inline=False)
-    embed.add_field(name='\a', value='\a', inline=False)
     embed.add_field(name='\a', value='\a', inline=False)
     embed.set_image(url='https://www.freepnglogos.com/uploads/youtube-logo-hd-8.png')
     embed.add_field(name='Полезные каналы:', value='\a', inline=False)
     embed.add_field(name='Иван Дымов', value='История, политика, справедливость. Канал товарища Дымова.\nhttps://www.youtube.com/@dymovivan/', inline=True)
     embed.add_field(name='Easy History', value='Привет, я очень люблю исторические видео, особенно когда они изложены в простом удобном формате, на этом канале история разных времен от античности до современности.\nhttps://www.youtube.com/@EasyHistory/', inline=True)
     embed.add_field(name='\a', value='\a', inline=False)
-    embed.add_field(name='Мудреныч', value='\nhttps://www.youtube.com/@user-hd2im9sl5x', inline=True)
+    embed.add_field(name='Мудреныч', value='Короткие ролики до 10 минут про историю. Классная подача через комиксы.\nhttps://www.youtube.com/@user-hd2im9sl5x', inline=True)
     embed.add_field(name='Сторик', value='Интересные и полезные  исторические видео на пальцах!\nhttps://www.youtube.com/@Storick', inline=True)
     embed.add_field(name='\a', value='\a', inline=False)
     embed.add_field(name='Epic History', value='Эпичная История познакомит вас с самыми драматичными и удивительными событиями в истории, от гигантских конфликтов, таких как Первая мировая война, до эпичной истории таких стран, как Россия.\nhttps://www.youtube.com/@EpicHistoryRu', inline=True)
@@ -125,11 +104,11 @@ async def friends_yt(ctx):
             'name': 'Easy History',
             'desc': 'Привет, я очень люблю исторические видео, особенно когда они изложены в простом удобном формате, на этом канале история разных времен от античности до современности.',
             'url': 'https://www.youtube.com/@EasyHistory/',
-            'thumb': 'http://b445539u.beget.tech/epic.png',
+            'thumb': 'http://b445539u.beget.tech/изи.png',
         },
         'f_3': {
             'name': 'Мудреныч',
-            'desc': 'История, политика, справедливость. Канал товарища Дымова.',
+            'desc': 'Короткие ролики до 10 минут про историю. Классная подача через комиксы.',
             'url': 'https://www.youtube.com/@user-hd2im9sl5x',
             'thumb': 'http://b445539u.beget.tech/мудреныч.png',
         },
