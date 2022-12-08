@@ -1,71 +1,102 @@
+# Библиотека для работы с дискорд
 import discord
 from discord.ext import commands
+# Библиотека для работы с веб-сайтами
 import requests
+# Библиотека для обработки данных полученных с веб-сайта
 from bs4 import BeautifulSoup
+# Библиотека генерации случайных значений
 import random
 
+# Конфигурация бота
 config = {
+    # Уникальный ключ доступа к созданному боту
     'token': 'MTAzOTQ5OTk0NDE2OTU4NjczOA.GF2-uk.wUAKLiZSn6Z5stSnYOfA3bD_OObyNMbcKeibYo',
-    'prefix': '#',
+    # Префикс для вызова комманд бота
+    'prefix': '!',
 }
 
-
+# Функция для получения случайной новости с сайта РИА
 async def random_news():
+    # Мы отправляем запрос на сайт и получаем ответ от него
     response = requests.get('https://ria.ru/')
+    # Ответ от сайта преобразуем для работы с python
     soup = BeautifulSoup(response.text, 'html.parser')
+    # В преобразованном файле ищем новости
     news = soup.findAll(class_='cell-list__item-link')
+    # Генерируем ключ для случайной новости
     rand = random.randint(0, len(news) - 1)
+    # Передаем случайную новость
     return news[rand].text, news[rand]['href']
 
-
+# Функция получения статей с Википедии
 async def wiki_info(request):
+    # Подготавливаем запрос на сайт, заменяя пробелы нижним подчеркиванием
     a = request.replace(" ", "_")
+    # Отправляем запрос на википедию, и сохраняем ответ
     resp = requests.get(f'https://ru.wikipedia.org/wiki/{a}')
+    # Преобразуем ответ для работы с python
     soup = BeautifulSoup(resp.text, 'html.parser')
+    # Ищем текст определения по запросу
     wiki_text = soup.find('p').text
+    # Собираем все "смежные" ссылки из статьи
     another_wiki = soup.find_all(class_='mw-redirect')
+    # Получаем изображение к статье
     wiki_img = soup.find(class_='thumbinner').find('img')
+    # Если изображение есть - передаем набор данных (текст статьи, ссылка на статью, ссылки на "смежные" статьи, ссылка на картинку к статье)
     if wiki_img != None:
         return wiki_text, f'https://ru.wikipedia.org/wiki/{a}', another_wiki, wiki_img['src']
+    # Иначе передаем набор данных (текст статьи, ссылка на статью, ссылки на "смежные" статьи)
     else:
         return wiki_text, f'https://ru.wikipedia.org/wiki/{a}', another_wiki
 
-
+# Заводим переменную для бота, настраеваем его разешения, и задаем префикс для вызова
 bot = commands.Bot(intents=discord.Intents.all(),
                    command_prefix=config['prefix'])
 
 
+# Команда бота для запроса случайной новости
 @bot.command(name='новости')
 async def news(ctx):
+    # Запрашиваем новость
     msg = await random_news()
+    # Берем её текст
     text = msg[0]
+    # Берем ссылку на неё
     href = msg[1]
+    # Отправляем сообщение в дискорд (Текст + ссылка на полную новость)
     await ctx.reply(f"{text}, \nЧитать далее: {href}")
 
-
+# Команда для запроса статьи с википедии
 @bot.command(name='вики')
 async def studere(ctx, *args):
+    # Собираем из слов единую фразу
     request = '_'.join(args)
+    # Запрашиваем статью на википедии
     result = await wiki_info(request)
+    # Отправляем сообщение со всеми "смежными" ссылками
     for href in result[2]:
         emb = discord.Embed(
             title=f'См. также: {href.text}',
             url=f'https://ru.wikipedia.org{href["href"]}'
         )
         await ctx.reply(embed=emb)
+    # Отправляем текст статьи
     embinfo = discord.Embed(
         title=f'{" ".join(args)}',
         description=str(result[0]),
         url=result[1]
     )
+    # Картинка к статье
     if result[3] != None:
         embinfo.set_thumbnail(url=f'https:{result[3]}')
     await ctx.reply(embed=embinfo)
 
+# Команда для вызова меню
 @bot.command(name='меню')
 async def menu(ctx):
-    embed = discord.Embed(title="Помощник бота ТГ-5", description="Тут вы сможете найти всю информацию для работы с ботом", color=0xff2600)
-    embed.set_author(name='ТГ-5', icon_url='https://www.pngmart.com/files/16/Vector-Help-PNG-Photos-1.png')
+    embed = discord.Embed(title="Помощник бота Learn History", description="Тут вы сможете найти всю информацию для работы с ботом", color=0xff2600)
+    embed.set_author(name='Learn History', icon_url='https://www.pngmart.com/files/16/Vector-Help-PNG-Photos-1.png')
     embed.set_thumbnail(url='https://abali.ru/wp-content/uploads/2010/12/gerb_ussr.png')
     embed.add_field(name="__**О сервере:**__", value="Сервер создан для изучения и обсуждения истории. Используя наш сервер вы можете не только обсуждать исторические темы и текущие новости, но и познавать мир посредствам нашего бота ТГ-5.", inline=False)
     embed.add_field(name='\a', value='\a', inline=False)
@@ -88,10 +119,13 @@ async def menu(ctx):
     embed.add_field(name='Гамлен', value='Привет! Здесь ты найдешь самые топовые исторические видео на пальцах. Подписывайся чтобы не пропустить!\nhttps://www.youtube.com/@Gamlen/', inline=True)
 
     embed.set_footer(text="Разработано Павлом")
+    # отправляем сообщение с нашим набором информации о боте
     await ctx.send(embed=embed)
 
+# Функция вывода интересных ютуб каналов
 @bot.command(name='товарищи')
 async def friends_yt(ctx):
+    # Словарь из каналов
     friends = {
         'f_1': {
             'name': 'Иван Дымов',
@@ -136,15 +170,15 @@ async def friends_yt(ctx):
             'thumb': 'http://b445539u.beget.tech/гамлен.png',
         },
     }
-
+    # Отправляем каждый отдельный канал с описанием в сообщении
     for friend in friends.values():
         embed = discord.Embed(title=friend['name'], description=friend['desc'], color=0xff2600, url=friend['url'])
-        embed.set_author(name='ТГ-5', icon_url='https://www.pngmart.com/files/16/Vector-Help-PNG-Photos-1.png')
+        embed.set_author(name='Learn History', icon_url='https://www.pngmart.com/files/16/Vector-Help-PNG-Photos-1.png')
         embed.set_image(url=friend['thumb'])
 
         await ctx.send(embed=embed)
 
-
+# Запуск бота в работу
 bot.run(config['token'])
 
 
