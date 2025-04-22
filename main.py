@@ -11,7 +11,7 @@ import random
 # Конфигурация бота
 config = {
     # Уникальный ключ доступа к созданному боту
-    'token': 'MTAzOTQ5OTk0NDE2OTU4NjczOA.GF2-uk.wUAKLiZSn6Z5stSnYOfA3bD_OObyNMbcKeibYo',
+    'token': 'TOKEN',
     # Префикс для вызова комманд бота
     'prefix': '!',
 }
